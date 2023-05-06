@@ -1,0 +1,12 @@
+function [flight_angles] = FlightPathAnglesFromstate(aircraft_state)
+aircraft_state = as;
+% v_g : va + wind_vel.
+v = [as(7);as(8);as(9)];
+R = RotationMatrix321(as(4:6));
+V = v + R * wind_inertial;
+v_g = norm(V);
+gam = acos(V(3)/v_g);
+flight_angles = [vg;chi;gam];
+
+end
+
