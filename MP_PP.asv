@@ -53,7 +53,7 @@ MP_Inputs(11,:) = [u2_cand(1),u3_cand(3)];
 MP_Inputs(12,:) = [u2_cand(2),u3_cand(3)];
 MP_Inputs(13,:) = [u2_cand(3),u3_cand(3)];
 MP_Inputs(14,:) = [u2_cand(4),u3_cand(3)];
-MP_Inputs(15,:) = [u2_cand(5),u3_cand(3)]
+MP_Inputs(15,:) = [u2_cand(5),u3_cand(3)];
 
 % MP_Inputs(16,:) = [u2_cand(1),u3_cand(4)];
 % MP_Inputs(17,:) = [u2_cand(2),u3_cand(4)];
@@ -244,7 +244,7 @@ end
 % Derive each motion primitives between the nodes.
 used_mp_map = derive_mp(stops,length(MP_Inputs));
 % For more analysis, I need to make the function of showing x,y,gam,chi,h.
-% A more precise trajectory
+% Real trajectory
 res_num = 1000;sml_t = Ts/res_num;
 l =  size(stops,1); % In this case, the size of stops is only nine * (depth + 1).
 Trajectories = cell(l);Trjt = [];

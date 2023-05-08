@@ -4,7 +4,7 @@ function [X_del] = MP(X_old,Ts,MP_Input)
 global va
 u2 = MP_Input(1);
 u3 = MP_Input(2);
-if u2 == 0
+if u2 ==0
     X_del(1) = va*cos(X_old(3))*cos(u3)*Ts;
     X_del(2) = va*sin(X_old(3))*cos(u3)*Ts;
     X_del(3) = 0;
@@ -16,7 +16,7 @@ else
 %     X_del(3) = u2*Ts;
 %     X_del(4) = 0;
 %     X_del(5) = -va*sin(u3)*Ts;
-    X_del(1) = va*cos(u3)/u2*(sin(u2*Ts+X_old(3))-sin(X_old(3)));
+    X_del(1) = va*cos(u3)/u2*(sin(u2*Ts+X_old(3))-sin(X_old(3)))Ts;
     X_del(2) = va*cos(u3)/u2*(cos(X_old(3))-cos(u2*Ts+X_old(3)));
     X_del(3) = u2*Ts;
     X_del(4) = 0;
