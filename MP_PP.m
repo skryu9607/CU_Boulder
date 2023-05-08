@@ -53,7 +53,7 @@ MP_Inputs(11,:) = [u2_cand(1),u3_cand(3)];
 MP_Inputs(12,:) = [u2_cand(2),u3_cand(3)];
 MP_Inputs(13,:) = [u2_cand(3),u3_cand(3)];
 MP_Inputs(14,:) = [u2_cand(4),u3_cand(3)];
-MP_Inputs(15,:) = [u2_cand(5),u3_cand(3)];
+MP_Inputs(15,:) = [u2_cand(5),u3_cand(3)]
 
 % MP_Inputs(16,:) = [u2_cand(1),u3_cand(4)];
 % MP_Inputs(17,:) = [u2_cand(2),u3_cand(4)];
