@@ -244,7 +244,7 @@ end
 % Derive each motion primitives between the nodes.
 used_mp_map = derive_mp(stops,length(MP_Inputs));
 % For more analysis, I need to make the function of showing x,y,gam,chi,h.
-% A more precise trajectory
+% Real trajectory
 res_num = 1000;sml_t = Ts/res_num;
 l =  size(stops,1); % In this case, the size of stops is only nine * (depth + 1).
 Trajectories = cell(l);Trjt = [];

@@ -6,7 +6,7 @@
 % This is a helper that students can use to complete HW 7. 
 %
 %
-
+ 
 close all;% <========= Comment out this line and you can run this file multiple times and plot results together
 clear all; 
 
