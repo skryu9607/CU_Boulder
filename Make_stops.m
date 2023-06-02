@@ -1,4 +1,4 @@
-function NODES = Make_stops(idx,mynodes)
+function NODES = Make_stops(idxs,mynodes)
 %The function Traj makes the trajectory from a node in final stage to start
 % goal. 
 % Input : an index of a certain node
@@ -6,15 +6,19 @@ function NODES = Make_stops(idx,mynodes)
 % How I know if those connect? -> Using mynodes.
 S = mynodes.S;
 T = mynodes.T;
-prev_idx = idx;
-NODES = [idx];
-while true
-   next_idx = S(find(T == prev_idx));
-   prev_idx = next_idx;
-   NODES = [next_idx,NODES];
-if prev_idx == 1
-    break
-end
+
+for i = 1:length(idxs)
+    prev_idx = idxs(i);
+    NODES{i} = [prev_idx];
+    
+    while true
+       next_idx = S(T == prev_idx);
+       prev_idx = next_idx;
+       NODES{i} = [next_idx,NODES{i}];
+    if prev_idx == 1
+        break
+    end
+    end
 end
 
 

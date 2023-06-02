@@ -1,26 +1,82 @@
 function [X_del] = MP(X_old,Ts,MP_Input)
 % Full state equations to describe the next step of states
 % The meaning of using MP, to extend the branch. 
-global va
-u2 = MP_Input(1);
-u3 = MP_Input(2);
-if u2 == 0
-    X_del(1) = va*cos(X_old(3))*cos(u3)*Ts;
-    X_del(2) = va*sin(X_old(3))*cos(u3)*Ts;
-    X_del(3) = 0;
-    X_del(4) = 0;
-    X_del(5) = -va*sin(u3)*Ts;
+% X = [x,y,chi,gamma,va,h]
+% Splined curves
+if isa(MP_Input,"cell")
+    a = MP_Input{1};
+    b = MP_Input{2};
+    va = a(1);
+    u2 = a(2);
+    u3 = a(3);
+    if u2 == 0
+        X_del(1) = va*cos(X_old(3))*cos(u3)*Ts;
+        X_del(2) = va*sin(X_old(3))*cos(u3)*Ts;
+        X_del(3) = 0;
+        X_del(4) = 0;
+        X_del(5) = 0;
+        X_del(6) = -va*sin(u3)*Ts;
+    else
+    %     X_del(1) = va*cos(X(3))*cos(u3)*Ts;
+    %     X_del(2) = va*sin(X(3))*cos(u3)*Ts;
+    %     X_del(3) = u2*Ts;
+    %     X_del(4) = 0;
+    %     X_del(5) = -va*sin(u3)*Ts;
+        X_del(1) = va*cos(u3)/u2*(sin(u2*Ts+X_old(3))-sin(X_old(3)));
+        X_del(2) = va*cos(u3)/u2*(cos(X_old(3))-cos(u2*Ts+X_old(3)));
+        X_del(3) = u2*Ts;
+        X_del(4) = 0;
+        X_del(5) = 0;
+        X_del(6) = -va*sin(u3)*Ts;
+    end
+    va = b(1);
+    u2 = b(2);
+    u3 = b(3);
+    if u2 == 0
+        X_del(1) = va*cos(X_old(3))*cos(u3)*Ts;
+        X_del(2) = va*sin(X_old(3))*cos(u3)*Ts;
+        X_del(3) = 0;
+        X_del(4) = 0;
+        X_del(5) = 0;
+        X_del(6) =  - va*sin(u3)*Ts;
+    else
+    %     X_del(1) = va*cos(X(3))*cos(u3)*Ts;
+    %     X_del(2) = va*sin(X(3))*cos(u3)*Ts;
+    %     X_del(3) = u2*Ts;
+    %     X_del(4) = 0;
+    %     X_del(5) = -va*sin(u3)*Ts;
+        X_del(1) = va*cos(u3)/u2*(sin(u2*Ts+X_old(3))-sin(X_old(3)));
+        X_del(2) = va*cos(u3)/u2*(cos(X_old(3))-cos(u2*Ts+X_old(3)));
+        X_del(3) = u2*Ts;
+        X_del(4) = 0;
+        X_del(5) = 0;
+        X_del(6) = -va*sin(u3)*Ts;
+    end
+% Straight, Curves, Spirals
 else
-%     X_del(1) = va*cos(X(3))*cos(u3)*Ts;
-%     X_del(2) = va*sin(X(3))*cos(u3)*Ts;
-%     X_del(3) = u2*Ts;
-%     X_del(4) = 0;
-%     X_del(5) = -va*sin(u3)*Ts;
-    X_del(1) = va*cos(u3)/u2*(sin(u2*Ts+X_old(3))-sin(X_old(3)));
-    X_del(2) = va*cos(u3)/u2*(cos(X_old(3))-cos(u2*Ts+X_old(3)));
-    X_del(3) = u2*Ts;
-    X_del(4) = 0;
-    X_del(5) = -va*sin(u3)*Ts;
+    va = MP_Input(1);
+    u2 = MP_Input(2);
+    u3 = MP_Input(3);
+    if u2 == 0
+        X_del(1) = va*cos(X_old(3))*cos(u3)*Ts;
+        X_del(2) = va*sin(X_old(3))*cos(u3)*Ts;
+        X_del(3) = 0;
+        X_del(4) = 0;
+        X_del(5) = 0;
+        X_del(6) = -va*sin(u3)*Ts;
+    else
+    %     X_del(1) = va*cos(X(3))*cos(u3)*Ts;
+    %     X_del(2) = va*sin(X(3))*cos(u3)*Ts;
+    %     X_del(3) = u2*Ts;
+    %     X_del(4) = 0;
+    %     X_del(5) = -va*sin(u3)*Ts;
+        X_del(1) = va*cos(u3)/u2*(sin(u2*Ts+X_old(3))-sin(X_old(3)));
+        X_del(2) = va*cos(u3)/u2*(cos(X_old(3))-cos(u2*Ts+X_old(3)));
+        X_del(3) = u2*Ts;
+        X_del(4) = 0;
+        X_del(5) = 0;
+        X_del(6) = -va*sin(u3)*Ts;
+    end
 end
 
 % % X = [Pn,Pe,ki,gam,h]

@@ -178,7 +178,7 @@ end
 %PlotSimulation(time_iter,aircraft_array,control_array, wind_array,'b')
 PlotSimulationWithCommands(time_iter,aircraft_array,control_array, wind_array, x_command, 'b')
 
-for c = 0:1:360;
+for c = 0:1:360
     circ_orbit(:,c+1) = orbit_center + orbit_radius*[cosd(c); sind(c); 0];
 end
 figure(8);

@@ -1,4 +1,4 @@
-function PlotSimulation(time, aircraft_state_array,control_inputs_array,col)
+function PlotSimulation(time, aircraft_state_array,control_inputs_array,col,goal)
 % Input : the length n vector which holds the time corresponding to the set
 % of variables., 12 by n array of aircraft state, the 4 by n array of
 % control inputs, and the string "col" which indicates the plooting optinon
@@ -13,15 +13,20 @@ function PlotSimulation(time, aircraft_state_array,control_inputs_array,col)
 % The function must be able to called multiple times for different
 % simulation runs with dfferent col indicators. 
 %close all;
+global goal
+
+if length(time) ~= length(aircraft_state_array)
+    time = time(1:length(aircraft_state_array));
+end
 figure;
 hold on;
 title("Position")
 subplot(311);
 plot(time, aircraft_state_array(1,:),col);
-ylabel("X[m]")  
+ylabel("X[m]")
 subplot(312);
 plot(time, aircraft_state_array(2,:),col);
-ylabel("Y[m]")  
+ylabel("Y[m]")
 subplot(313);
 plot(time, -aircraft_state_array(3,:),col);
 ylabel("Z[m]");hold off
@@ -74,12 +79,15 @@ subplot(413);
 plot(time,control_inputs_array(3,:));ylabel("Rudder");
 subplot(414);
 plot(time,control_inputs_array(4,:));ylabel("Throttle");hold off
-
 figure;
+
 X = aircraft_state_array(1:3,:);
 plot3(X(1,:),X(2,:),-X(3,:),col);hold on
 plot3(X(1,1),X(2,1),-X(3,1),'gd')
-plot3(X(1,end),X(2,end),-X(3,end),'rd');hold off
-
+plot3(X(1,end),X(2,end),-X(3,end),'rd')
+plot3(goal(1),goal(2),-goal(end),'bd');hold off
+fntsz = 20;
+xlabel("x [m]",'fontsize',fntsz);ylabel("y [m]",'fontsize',fntsz);zlabel("z [m]",'fontsize',fntsz);
+title("Full DYNs Paths",'fontsize',fntsz)
 end
 

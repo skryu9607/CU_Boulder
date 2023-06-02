@@ -16,6 +16,7 @@ clc;
 close all;clear all;
 ttwistor
 % Time condition
+tic
 init = 0; final = 500; 
 dt = 0.01;
 n = (final-init) / dt + 1;
@@ -39,3 +40,4 @@ end
 disp("The update is done")
 col = 'b';
 PlotSimulation(time, aircraft_state_array,control_inputs_array,col)
+toc
