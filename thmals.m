@@ -9,12 +9,10 @@ classdef thmals
     end
     
     methods
-        function obj = add(obj,x,y,z,radius)
-            obj.source = [x,y,z]';
+        function obj = add(obj,src,radius,wd)
+            obj.source = src';
             obj.radius = radius;
-        end
-        function obj = wd(obj,wd_in_th)
-            obj.wind = wd_in_th;
+            obj.wind = wd;
         end
     end
 end

@@ -19,9 +19,10 @@ if isa(MP_Input,"cell")
         Thrust = [T_x,T_y,T_z]';
         T = norm(Thrust,2);
         e_f = -T*u1/(ap.m*ap.g*eta_ec*eta_p);
-        e_h = ap.g*(-u1*sin(u3)+wind_inertial(3));
+        %e_h = ap.g*(-u1*sin(u3)+wind_inertial(3));
         % Bigger is the good one.
-        costs = costs + e_h + e_f ;
+        e_h = 0;
+        costs = costs + e_h - e_f ;
     end
 else
     u1 = MP_Input(1);
@@ -41,9 +42,10 @@ else
     Thrust = [T_x,T_y,T_z]';
     T = norm(Thrust,2);
     e_f = -T*u1/(ap.m*ap.g*eta_ec*eta_p);
-    e_h = ap.g*(-u1*sin(u3)+wind_inertial(3));
+    %e_h = ap.g*(-u1*sin(u3)+wind_inertial(3));
     % Bigger is the good one.
-    costs = e_h + e_f ;
+    e_h = 0;
+    costs = e_h - e_f ;
     
 end
 

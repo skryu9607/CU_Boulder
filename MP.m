@@ -13,9 +13,7 @@ if isa(MP_Input,"cell")
         X_del(1) = va*cos(X_old(3))*cos(u3)*Ts;
         X_del(2) = va*sin(X_old(3))*cos(u3)*Ts;
         X_del(3) = 0;
-        X_del(4) = 0;
-        X_del(5) = 0;
-        X_del(6) = -va*sin(u3)*Ts;
+        X_del(4) = -va*sin(u3)*Ts;
     else
     %     X_del(1) = va*cos(X(3))*cos(u3)*Ts;
     %     X_del(2) = va*sin(X(3))*cos(u3)*Ts;
@@ -25,9 +23,7 @@ if isa(MP_Input,"cell")
         X_del(1) = va*cos(u3)/u2*(sin(u2*Ts+X_old(3))-sin(X_old(3)));
         X_del(2) = va*cos(u3)/u2*(cos(X_old(3))-cos(u2*Ts+X_old(3)));
         X_del(3) = u2*Ts;
-        X_del(4) = 0;
-        X_del(5) = 0;
-        X_del(6) = -va*sin(u3)*Ts;
+        X_del(4) = -va*sin(u3)*Ts;
     end
     va = b(1);
     u2 = b(2);
@@ -36,9 +32,7 @@ if isa(MP_Input,"cell")
         X_del(1) = va*cos(X_old(3))*cos(u3)*Ts;
         X_del(2) = va*sin(X_old(3))*cos(u3)*Ts;
         X_del(3) = 0;
-        X_del(4) = 0;
-        X_del(5) = 0;
-        X_del(6) =  - va*sin(u3)*Ts;
+        X_del(4) =  - va*sin(u3)*Ts;
     else
     %     X_del(1) = va*cos(X(3))*cos(u3)*Ts;
     %     X_del(2) = va*sin(X(3))*cos(u3)*Ts;
@@ -48,9 +42,7 @@ if isa(MP_Input,"cell")
         X_del(1) = va*cos(u3)/u2*(sin(u2*Ts+X_old(3))-sin(X_old(3)));
         X_del(2) = va*cos(u3)/u2*(cos(X_old(3))-cos(u2*Ts+X_old(3)));
         X_del(3) = u2*Ts;
-        X_del(4) = 0;
-        X_del(5) = 0;
-        X_del(6) = -va*sin(u3)*Ts;
+        X_del(4) = -va*sin(u3)*Ts;
     end
 % Straight, Curves, Spirals
 else
@@ -61,9 +53,7 @@ else
         X_del(1) = va*cos(X_old(3))*cos(u3)*Ts;
         X_del(2) = va*sin(X_old(3))*cos(u3)*Ts;
         X_del(3) = 0;
-        X_del(4) = 0;
-        X_del(5) = 0;
-        X_del(6) = -va*sin(u3)*Ts;
+        X_del(4) = -va*sin(u3)*Ts;
     else
     %     X_del(1) = va*cos(X(3))*cos(u3)*Ts;
     %     X_del(2) = va*sin(X(3))*cos(u3)*Ts;
@@ -73,9 +63,7 @@ else
         X_del(1) = va*cos(u3)/u2*(sin(u2*Ts+X_old(3))-sin(X_old(3)));
         X_del(2) = va*cos(u3)/u2*(cos(X_old(3))-cos(u2*Ts+X_old(3)));
         X_del(3) = u2*Ts;
-        X_del(4) = 0;
-        X_del(5) = 0;
-        X_del(6) = -va*sin(u3)*Ts;
+        X_del(4) = -va*sin(u3)*Ts;
     end
 end
 

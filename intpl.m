@@ -10,7 +10,7 @@ x = [x_prev];
 for i = 1 : length(time)
     x_dot = MP(x_prev,Ts,MP1);
     x_next = x_prev + x_dot';
-    pts = [x_next(1),x_next(2),x_next(5)]';
+    pts = [x_next(1),x_next(2),x_next(end)]';
     if collide(pts,thm1.source,thm1.radius,0)
         break
     end

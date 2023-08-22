@@ -79,15 +79,15 @@ subplot(413);
 plot(time,control_inputs_array(3,:));ylabel("Rudder");
 subplot(414);
 plot(time,control_inputs_array(4,:));ylabel("Throttle");hold off
-figure;
 
-X = aircraft_state_array(1:3,:);
-plot3(X(1,:),X(2,:),-X(3,:),col);hold on
-plot3(X(1,1),X(2,1),-X(3,1),'gd')
-plot3(X(1,end),X(2,end),-X(3,end),'rd')
-plot3(goal(1),goal(2),-goal(end),'bd');hold off
-fntsz = 20;
-xlabel("x [m]",'fontsize',fntsz);ylabel("y [m]",'fontsize',fntsz);zlabel("z [m]",'fontsize',fntsz);
-title("Full DYNs Paths",'fontsize',fntsz)
+% figure; 
+% X = aircraft_state_array(1:3,:);
+% plot3(X(1,:),X(2,:),-X(3,:),col);hold on
+% plot3(X(1,1),X(2,1),-X(3,1),'gd')
+% plot3(X(1,end),X(2,end),-X(3,end),'rd')
+% plot3(goal(1),goal(2),-goal(end),'bd');hold off
+% fntsz = 20;
+% xlabel("x [m]",'fontsize',fntsz);ylabel("y [m]",'fontsize',fntsz);zlabel("z [m]",'fontsize',fntsz);
+% title("Full DYNs Paths",'fontsize',fntsz)
 end
 

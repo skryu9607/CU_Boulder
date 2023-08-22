@@ -7,8 +7,8 @@ classdef obstacles
         radius;
     end
     methods
-        function obj = add(obj,x,y,z,radius)
-            obj.source = [x,y,z]';
+        function obj = add(obj,src,radius)
+            obj.source = src';
             obj.radius = radius;
         end
         

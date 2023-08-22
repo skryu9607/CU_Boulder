@@ -10,8 +10,8 @@ classdef node
         % cost : gh + 0.5*va^2 + ef
     end
     methods
-        function obj = addNode(obj, X, Y,chi,gamma,va,Z)
-            obj.sts = [obj.sts,[X, Y, chi, gamma,va,Z]'];
+        function obj = addNode(obj, X, Y,chi,Z)
+            obj.sts = [obj.sts,[X, Y, chi,Z]'];
             obj.pts = [obj.pts,[X,Y,Z]'];
             obj.hrsts = [obj.hrsts,0];
             obj.costs = [obj.costs,0];
@@ -45,7 +45,8 @@ classdef node
             if length(obj.costs) < idx
                 obj.costs(idx) = 0;
             end
-            obj.costs(idx) = obj.costs(idx) + del_costs;
+            prv_idx = obj.S(idx);
+            obj.costs(idx) = obj.costs(prv_idx) + del_costs;
 
             
         end

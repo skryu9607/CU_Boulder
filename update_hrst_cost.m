@@ -1,4 +1,4 @@
-function [mynodes] = assign_hrst_cost(MP_Inputs,mynodes,nodes_idx,L)
+function [mynodes] = update_hrst_cost(MP_Inputs,mynodes,nodes_idx,L)
 %ASSIGN_HRST_COST : All expanded nodes of each previous node
 %   Detailed explanation goes here
 
