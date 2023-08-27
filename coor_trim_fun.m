@@ -22,7 +22,7 @@ Rot = RotationMatrix321(x0(4:6));
 
 Desired_for = forces - aircraft_parameters.m*Rot*ACC;
 
-cost = norm(Desired_for,2) + norm(moments,2) + aero_force(2)^2;
+cost = norm(Desired_for,2) + norm(moments,2) + aero_force(2)^2
 
 end
 

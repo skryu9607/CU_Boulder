@@ -20,13 +20,28 @@ goal = [330,120,0,0,0,-2100];  %depth = 3, eps = 100;
 %% Make the Thermals objects
 thm1 = thmals;
 % add(obj,x,y,z,radius)
-thm1 = add(thm1,+400,+600,-2300,300);
-wd_in_th = [0,0,-10];
-thm1 = wd(thm1,wd_in_th);
+draw_num = 100;
+%center_th = [200,-100,-2100];
+% R_thm = 50;wd_th = [0,0,-15];
+center_th = [200,+50,-2000];
+R_thm = 60;wd_th = [0,0,-10];
+thm1 = add(thm1,center_th,R_thm,wd_th);
+[x_t,y_t,z_t] = cylinder(R_thm,draw_num);
+z_t = z_t * (goal(end)-x0(end)) + x0(end);
+x_t = x_t + center_th(1);
+y_t = y_t + center_th(2);
 
 %% Make the Obstacle objects
 obs1 = obstacles;
-obs1 = add(obs1,600,0,-2200,300);
+% center_ob = [200,-500,-1900];
+% R_ob = 50;
+center_ob = [200,-100,-2050];
+R_ob = 30; 
+obs1 = add(obs1,center_ob,R_ob);
+[x_o,y_o,z_o] = sphere(draw_num);
+x_o = x_o*R_ob+center_ob(1);
+y_o = y_o*R_ob+center_ob(2);
+z_o = z_o*R_ob+center_ob(3);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Make the Inputs for all elements of Motion Primitives.
@@ -37,7 +52,13 @@ obs1 = add(obs1,600,0,-2200,300);
 % course angle, flight path angle, u2, u3
 rsl = 1;
 MP_Inputs = All_MPs(Ts,rsl,1);
-
+hold on;
+surf(x_t,y_t,-z_t)
+grid on;
+plot3(x_o,y_o,-z_o,'go')
+plot3(x0(1),x0(2),-x0(end),'ro');plot3(goal(1),goal(2),-goal(end),'ko');
+view(3);axis equal;xlabel('x[m]');ylabel('y[m]');zlabel('z[m]');
+hold off
 %% STEP 1. Making the tree expanded by Motion primitives.
 tic
 num = 0;

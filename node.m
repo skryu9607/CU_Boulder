@@ -45,7 +45,8 @@ classdef node
             if length(obj.costs) < idx
                 obj.costs(idx) = 0;
             end
-            prv_idx = obj.S(idx);
+            %prv_idx = obj.S(idx);
+            prv_idx = idx;
             obj.costs(idx) = obj.costs(prv_idx) + del_costs;
 
             

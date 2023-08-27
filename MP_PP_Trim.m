@@ -16,16 +16,16 @@ va = 25;Ts = 20;eps = 100;
 x0 = [0,0,deg2rad(0),deg2rad(0),-2000]';
 goal = [350,350,0,0,-2900];
 
-%% Make the Thermals objects
-thm1 = thmals;
-% add(obj,x,y,z,radius)
-thm1 = add(thm1,+400,+600,-2300,300);
-wd_in_th = [0,0,-10];
-thm1 = wd(thm1,wd_in_th);
-
-%% Make the Obstacle objects
-obs1 = obstacles;
-obs1 = add(obs1,600,0,-2200,300);
+% %% Make the Thermals objects
+% thm1 = thmals;
+% % add(obj,x,y,z,radius)
+% thm1 = add(thm1,+400,+600,-2300,300);
+% wd_in_th = [0,0,-10];
+% thm1 = wd(thm1,wd_in_th);
+% 
+% %% Make the Obstacle objects
+% obs1 = obstacles;
+% obs1 = add(obs1,600,0,-2200,300);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Make the Inputs for all elements of Motion Primitives.
@@ -42,7 +42,7 @@ u3_cand =[deg2rad(10),deg2rad(-10),0];
 
 % course angle, flight path angle, u2, u3
 rsl = 1;
-MP_Inputs = All_MPs(Ts,rsl,1);
+MP_Inputs = All_MPs(Ts,rsl,'VIS');
 
 %% STEP 1. Making the tree expanded by Motion primitives.
 tic

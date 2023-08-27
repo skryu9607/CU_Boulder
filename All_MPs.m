@@ -4,10 +4,10 @@ MP_Inputs = cell(n_set,1);
 
 wind_inertial = [0,0,0]';
 % u1 : air relative velocity
-u1_cand = [10,20];
+u1_cand = [17,22]
 % Ts = 20;
 % rsl = 20;
-sml_t = Ts/rsl;
+sml_t = Ts/rsl
 % No matter how complex the motion primitives are, the objective of the
 % The First step of my research is making fancy curves. 
 % I will make 
@@ -134,7 +134,7 @@ if flag == 'VIS'
     for flag = 1:length(MP_Inputs)
         for i = 1:length(MP_Inputs{flag})
             Trjt = [];
-            x_old = [0,0,0,0,0,-1655]';
+            x_old = [0,0,0,-1655]';
             for k = 1:rsl
                 Trjt = [Trjt,x_old];
                 if flag == 4
@@ -146,16 +146,17 @@ if flag == 'VIS'
                 else
                     x_del = MP(x_old,sml_t,MP_Inputs{flag}{i}(k,:));
                 end
-                wind_effect = sml_t * [wind_inertial(1),wind_inertial(2),0,0,0,wind_inertial(3)]';
+                wind_effect = sml_t * [wind_inertial(1),wind_inertial(2),0,wind_inertial(3)]';
                 x1 = x_old + x_del' + wind_effect;
                 x_old = x1;
+
             end
             Trajectories{flag}{i} = Trjt;
             title("All Motion Primitives are presented",'fontsize',28)
             if flag == 1
                 disp("The straight lines,Green")
                 plot3(Trajectories{flag}{i}(1,:),Trajectories{flag}{i}(2,:),-Trajectories{flag}{i}(end,:),'g');
-                        hold on;view(3);grid on;
+                hold on;view(3);grid on;
             elseif flag == 2
                 disp("The curves,Blue")
                 plot3(Trajectories{flag}{i}(1,:),Trajectories{flag}{i}(2,:),-Trajectories{flag}{i}(end,:),'b');
@@ -170,7 +171,7 @@ if flag == 'VIS'
                 plot3(Trajectories{flag}{i}(1,:),Trajectories{flag}{i}(2,:),-Trajectories{flag}{i}(end,:),'r');       
                 hold on;view(3);grid on;
             end
-            fntsz = 20;
+            fntsz = 28;
             xlabel("x [m]",'fontsize',fntsz);ylabel("y [m]",'fontsize',fntsz);zlabel("z [m]",'fontsize',fntsz);
             plot3(0,0,0,'markerfacecolor','red')
             

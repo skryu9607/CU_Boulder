@@ -8,7 +8,7 @@ density = stdatmo(-x0(3));
 % cost is the absolute value of force and parameters
 [forces,moments] =  AircraftForcesAndMoments(x0,air_ct,wind_inertial,density,aircraft_parameters);
 
-cost = norm(forces,2) + norm(moments,2);
+cost = norm(forces,2) + norm(moments,2)
 
 end
 

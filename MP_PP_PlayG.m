@@ -9,14 +9,17 @@ ttwistor;
 ap = aircraft_parameters;
 global wind_inertial goal
 wind_inertial = [-.5,-.5,-1]'; % Inertial velocity by body frame.
-Ts = 10;eps = 100;
+Ts = 20;eps = 50;
 % u1 = va;
+depth = 5; best = 12; % Best 8 nodes.
 va_cand = [17,22];col ='r';
 %% Make the start and goal states
 % States : [Pn,Pe,chi,h]
-x0 = [0,0,deg2rad(0),-1655]';
-%goal = [300,600,0,0,-2400];
-goal = [300,-500,0,-2000];  %depth = 3, eps = 100;
+x0 = [0,0,deg2rad(0),-1655]'
+%x0 = [0,0,deg2rad(0),-2000]';
+goal = [600,-400,0,-1905];
+%goal = [300,-500,0,-2000];  %depth = 3, eps = 100;
+%goal = [330,120,0,-2100]
 %% Aug 22th
 % state 차원 줄이기 (check!)
 % thermals and objects랑 start랑 goal만 있는 맵 만들기 (check!)
@@ -27,30 +30,45 @@ goal = [300,-500,0,-2000];  %depth = 3, eps = 100;
 thm1 = thmals;
 % add(obj,x,y,z,radius)
 draw_num = 100;
-center_th = [200,-100,-2100];R_thm = 50;wd_th = [0,0,-15];
+%center_th = [200,-100,-2100];
+% R_thm = 50;wd_th = [0,0,-15];
+R_thm = 60;
+center_th = [300,-100,-1400];
+wd_th = [0,0,-10];
 thm1 = add(thm1,center_th,R_thm,wd_th);
 [x_t,y_t,z_t] = cylinder(R_thm,draw_num);
-z_t = z_t * (goal(end)-x0(end)) + x0(end);
+z_t = z_t * -600 + center_th(3);
 x_t = x_t + center_th(1);
 y_t = y_t + center_th(2);
 
 
 %% Make the Obstacle objects
 obs1 = obstacles;
-center_ob = [200,-500,-1900];
-R_ob = 50;
+% center_ob = [200,-500,-1900];
+% R_ob = 50;
+center_ob = [500,-350,-1755];
+R_ob = 60; 
 obs1 = add(obs1,center_ob,R_ob);
 [x_o,y_o,z_o] = sphere(draw_num);
 x_o = x_o*R_ob+center_ob(1);
 y_o = y_o*R_ob+center_ob(2);
 z_o = z_o*R_ob+center_ob(3);
-
+%% Make the goal region
+center_goal = [goal(1),goal(2),goal(end)];
+[x_g,y_g,z_g] = sphere(21);
+x_g = x_g*eps+center_goal(1);
+y_g = y_g*eps+center_goal(2);
+z_g = z_g*eps+center_goal(3);
+%%
 hold on;
-surf(x_t,y_t,-z_t)
-grid on;
+
+surf(x_t,y_t,-z_t);fntsz = 20;
+grid on;title("The environments. A thermal and an obstacle",'fontsize',fntsz);
 plot3(x_o,y_o,-z_o,'go')
-plot3(x0(1),x0(2),-x0(end),'ro');plot3(goal(1),goal(2),-goal(end),'ko');
-view(3);axis equal;xlabel('x[m]');ylabel('y[m]');zlabel('z[m]');
+plot3(x_g,y_g,-z_g,'b-.')
+plot3(x0(1),x0(2),-x0(end),'ro','MarkerFaceColor','r');plot3(goal(1),goal(2),-goal(end),'ko','MarkerFaceColor','k');
+view(3);axis equal;xlabel('x[m]','FontSize',fntsz);ylabel('y[m]','FontSize',fntsz);
+zlabel('z[m]','FontSize',fntsz);
 hold off
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Make the Inputs for all elements of Motion Primitives.
@@ -93,7 +111,7 @@ col_idx = [];
 % 4 depth, Too dense
 % 3 depth, 
 full_cand_idx = zeros(n,1);
-depth = 5; best = 10; % Best 8 nodes.
+
 % set the depth of a tree.
 
 % They 
@@ -166,7 +184,7 @@ while num < depth
 
             new_nodes(:,n*(kk-1)+i) = x1;
             mynodes = addNode(mynodes,x1(1),x1(2),x1(3),x1(end));
-            Instant = addNode(Instant,x1(1),x1(2),x1(3),x1(end));
+            %Instant = addNode(Instant,x1(1),x1(2),x1(3),x1(end));
             mynodes.mp = [mynodes.mp,i];
             % collision check.
             if num == 1
@@ -193,9 +211,9 @@ while num < depth
         % It's time to evaluate the heruistics and costs
         % choose the best "# of best" motion primitives. 
         % 하나의 stops에서 나온 all motion primitives를 비교분석.
-        Instant = node;
-        Instant.S = [(best^(num-1)-1)/(best-1) + kk];
-        Instant.sts = x_old;
+        %Instant = node;
+        %Instant.S = [(best^(num-1)-1)/(best-1) + kk];
+        %Instant.sts = x_old;
         mynodes = update_hrst_cost(MP_Inputs,mynodes,full_cand_idx,norm_L);
         alpha = 0.5;
         eval_func = (1-alpha) * mynodes.hrsts(full_cand_idx) + alpha * mynodes.costs(full_cand_idx);
@@ -240,7 +258,7 @@ for i = 1:length(mynodes.T)
         mynodes.S(1) = 0;
     else
         mynodes.T(i) = i;
-        %mynodes.S(i) = fix((i-2)/best)+1;
+        mynodes.S(i) = fix((i-2)/best)+1;
     end
 end
 disp("Plot")
@@ -250,7 +268,7 @@ figure;
 plot3(mynodes.sts(1,:),mynodes.sts(2,:),-mynodes.sts(end,:),'bo','markersize',10)
 hold on;
 %plot3(mynodes.sts(1,col_idx),mynodes.sts(2,col_idx),-mynodes.sts(5,col_idx),'go','markersize',6,'markerfacecolor','g')
-fntsz = 20;xlabel("x [m]",'fontsize',fntsz);ylabel("y [m]",'fontsize',fntsz);zlabel("z [m]",'fontsize',fntsz);
+xlabel("x [m]",'fontsize',fntsz);ylabel("y [m]",'fontsize',fntsz);zlabel("z [m]",'fontsize',fntsz);
 title("MP-PP with obstacles and thermals,A Full graph of nodes ",'fontsize',fntsz)
 grid on;
 plot3(x0(1),x0(2),-x0(end),'ko','markersize',8,'markerfacecolor','k');
@@ -342,7 +360,7 @@ NN = length(str_MP) + length(cuv_MP) + length(spr_MP) + length(spl_MP);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % A more precise trajectory
-res_num = 10000;sml_t = Ts/res_num;
+res_num = 20000;sml_t = Ts/res_num;
 l =  length(stops); % In this case, the size of stops is only nine * (depth + 1).
 smp_path = cell(l,1);Trjt = [];
 
@@ -351,7 +369,7 @@ for i = 1:l
     Trjt = [];
     for j = 1:length(stops{i})-1
         % j : an each stops of a certain i-th trajectories
-        
+
         stops_old = stops_red{i}(:,j);
         MP_each_stops = mynodes.mp(stops{i}(j+1));
         sng_mp = single_MP(MP_Inputs,MP_each_stops);
@@ -365,18 +383,6 @@ for i = 1:l
     end
     smp_path{i} = Trjt;
 end
-
-figure;
-
-title("A more precise trajectories",'fontsize',fntsz);
-xlabel("x [m]",'fontsize',fntsz);ylabel("y [m]",'fontsize',fntsz);zlabel("z [m]",'fontsize',fntsz);
-hold on;grid on;view(3);
-
-for i = 1:l
-    plot3(smp_path{i}(1,:)',smp_path{i}(2,:)',-smp_path{i}(end,:)','bo')
-    plot3(stops_red{i}(1,:)',stops_red{i}(2,:)',-stops_red{i}(end,:)','ro')
-end
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Full-Dynamics
 % 1. tra_red and used_mp_map -> trim_defi. : 
@@ -425,7 +431,7 @@ for i = 1:length(smp_path)
             Res=AirRelativeVelocityToWindAngles(as(7:9));
             x_r = [as(1),as(2),as(6),as(3)]';
             head = as(6);
-        
+
         % Spirals and curves    
         elseif MP_INDEX < length(str_MP) + length(cuv_MP) + length(spr_MP) + 1
             disp("Spirals and Curves")
@@ -447,7 +453,7 @@ for i = 1:length(smp_path)
             Res=AirRelativeVelocityToWindAngles(as(7:9));
             x_r = [as(1),as(2),as(6),as(3)]';
             head = as(6);
-            
+
         % Splined curves
         else
             disp("Splined Curves")
@@ -471,7 +477,7 @@ for i = 1:length(smp_path)
             end
             x_r = [as(1),as(2),as(6),as(3)]';
             head = as(6);
-            
+
             b = U{2};
             va = b(1);gam0 = b(3);h = -x_r(end);R = va/b(2);
             xtd0 = [va,gam0,h,R]';
@@ -515,30 +521,33 @@ for i = 1:l
     plot3(stops_red{i}(1,:)',stops_red{i}(2,:)',-stops_red{i}(end,:)','ro','markersize',8,'markerfacecolor','r')
 end
 plot3(goal(1),goal(2),-goal(end),'bd','markersize',8,'markerfacecolor','b');
-plot3(X(1,1),X(2,1),-X(3,1),'gd','markersize',8,'markerfacecolor','g')
+% plot3(X(1,1),X(2,1),-X(3,1),'gd','markersize',8,'markerfacecolor','g')
 view(3);
 surf(x_t,y_t,-z_t);
 grid on;
 plot3(x_o,y_o,-z_o,'go');
+plot3(x_g,y_g,-z_g,'b-.')
+plot3(x0(1),x0(2),-x0(end),'ro','MarkerFaceColor','r');plot3(goal(1),goal(2),-goal(end),'ko','MarkerFaceColor','k');
+hold off;
 %%
-figure;title("2D Comparision between full-dyn and simple-dyn",'fontsize',fntsz)
-fntsz = 14;
-xlabel("x [m]",'fontsize',fntsz);ylabel("y [m]",'fontsize',fntsz);zlabel("z [m]",'fontsize',fntsz);
-grid on;
-hold on;
-for i = 1:length(stops)
-    X = as_all_array{i};
-    plot3(X(1,:),X(2,:),-X(3,:),col);
-    plot3(X(1,end),X(2,end),-X(3,end),'rd','markersize',8,'markerfacecolor','r')
-end
-for i = 1:l
-    plot3(smp_path{i}(1,:)',smp_path{i}(2,:)',-smp_path{i}(end,:)','b')
-    plot3(stops_red{i}(1,:)',stops_red{i}(2,:)',-stops_red{i}(end,:)','ro','markersize',8,'markerfacecolor','r')
-end
-plot3(goal(1),goal(2),-goal(end),'bd','markersize',8,'markerfacecolor','b');
-plot3(X(1,1),X(2,1),-X(3,1),'gd','markersize',8,'markerfacecolor','g')
-hold off
-disp("The update is done")
+% figure;title("2D Comparision between full-dyn and simple-dyn",'fontsize',fntsz)
+% fntsz = 14;
+% xlabel("x [m]",'fontsize',fntsz);ylabel("y [m]",'fontsize',fntsz);zlabel("z [m]",'fontsize',fntsz);
+% grid on;
+% hold on;
+% for i = 1:length(stops)
+%     X = as_all_array{i};
+%     plot3(X(1,:),X(2,:),-X(3,:),col);
+%     plot3(X(1,end),X(2,end),-X(3,end),'rd','markersize',8,'markerfacecolor','r')
+% end
+% for i = 1:l
+%     plot3(smp_path{i}(1,:)',smp_path{i}(2,:)',-smp_path{i}(end,:)','b')
+%     plot3(stops_red{i}(1,:)',stops_red{i}(2,:)',-stops_red{i}(end,:)','ro','markersize',8,'markerfacecolor','r')
+% end
+% plot3(goal(1),goal(2),-goal(end),'bd','markersize',8,'markerfacecolor','b');
+% plot3(X(1,1),X(2,1),-X(3,1),'gd','markersize',8,'markerfacecolor','g')
+% hold off
+% disp("The update is done")
 
 %% Step 3. Cost evaluations : the size of acs values
 smp_dyn_pts = cell(l,1);error = cell(l,1);
@@ -569,5 +578,8 @@ view(3);
 surf(x_t,y_t,-z_t);
 grid on;
 plot3(x_o,y_o,-z_o,'go');
+plot3(x_g,y_g,-z_g,'b-.')
+plot3(x0(1),x0(2),-x0(end),'ro','MarkerFaceColor','r');plot3(goal(1),goal(2),-goal(end),'ko','MarkerFaceColor','k');
+hold off;
 %%
-PlotSimulation(time, as_all_array{best},acs_all_array{best},col,goal)
+% PlotSimulation(time, as_all_array{best},acs_all_array{best},col,goal)
