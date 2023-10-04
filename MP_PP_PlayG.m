@@ -1,25 +1,60 @@
 % Seung-Keol Ryu
 % created : 3/13/2023
 %% "Life is short, and art is long."
+% What the bug!
+% 1. Costs가 전부 1로 나온다.
+% 2. 그리고 costs의 accumulative를 반영해야한다. 
+% 3. Guidance 모델 짜기 
+% 4. 바람이 강할 때 <- In the thermals, 어떻게 바람에 의해서 kinematics가 변하는지
+% -> Course angle과 Heading angle의 차이?
+
+
+
+
+
+
+
+
 
 %% The code of Motion primitives based path planners
-clc;clear all;close all;
-ttwistor;
-%% Make the initial setting (usually constant)
-ap = aircraft_parameters;
+clc;clear all;close all;ttwistor;
+
+%% Make the initial setting of simulation
+ap = aircraft_parameters; % Parameters of Real fixed-wing aircraft (Tempest)
+
 global wind_inertial goal
-wind_inertial = [-.5,-.5,-1]'; % Inertial velocity by body frame.
-Ts = 20;eps = 50;
-% u1 = va;
-depth = 5; best = 12; % Best 8 nodes.
-va_cand = [17,22];col ='r';
+
+% Wind velocity : Inertial velocity by body frame : constant.
+wind_inertial = [-.5,-.5,-1]';
+
+% Important parameters : 
+% 1. Fixed time of trim primitives
+Ts = 20;
+
+% 2. A radius of goal regions
+eps = 50;
+
+% 3. Maximum depth of tree structures.
+depth = 5; 
+
+% 4. Branch factor of each vertex. Choose best n branches.
+bst = 8;
+
+% 5. Air-relative velocity (v_a)
+va_cand = [22];
+
+% 6. Default color of each plot.
+col ='r';
+
 %% Make the start and goal states
+% States : Motion (locations, course angle)
 % States : [Pn,Pe,chi,h]
-x0 = [0,0,deg2rad(0),-1655]'
+x0 = [0,0,deg2rad(0),-1655]';
 %x0 = [0,0,deg2rad(0),-2000]';
 goal = [600,-400,0,-1905];
 %goal = [300,-500,0,-2000];  %depth = 3, eps = 100;
 %goal = [330,120,0,-2100]
+
 %% Aug 22th
 % state 차원 줄이기 (check!)
 % thermals and objects랑 start랑 goal만 있는 맵 만들기 (check!)
@@ -53,6 +88,7 @@ obs1 = add(obs1,center_ob,R_ob);
 x_o = x_o*R_ob+center_ob(1);
 y_o = y_o*R_ob+center_ob(2);
 z_o = z_o*R_ob+center_ob(3);
+
 %% Make the goal region
 center_goal = [goal(1),goal(2),goal(end)];
 [x_g,y_g,z_g] = sphere(21);
@@ -70,7 +106,9 @@ plot3(x0(1),x0(2),-x0(end),'ro','MarkerFaceColor','r');plot3(goal(1),goal(2),-go
 view(3);axis equal;xlabel('x[m]','FontSize',fntsz);ylabel('y[m]','FontSize',fntsz);
 zlabel('z[m]','FontSize',fntsz);
 hold off
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
 %% Make the Inputs for all elements of Motion Primitives.
 % u1 : air relative velocity
 % u2 = 0, u3 = 0 : Straight motion
@@ -79,9 +117,12 @@ hold off
 % course angle, flight path angle, u2, u3
 rsl = 1;
 MP_Inputs = All_MPs(Ts,rsl,1);
+%%
 
-%% STEP 1. Making the tree expanded by Motion primitives.
-tic
+%-------------------------------------------------------------------------%
+% The first step : Reduced order planning step.
+%-------------------------------------------------------------------------%
+
 num = 0;
 str_MP = MP_Inputs{1};
 cuv_MP = MP_Inputs{2};
@@ -202,7 +243,7 @@ while num < depth
 
             end
             % 특정 노드로부터 나오는 cand_idx인데, absolute index를 가짐.
-            full_cand_idx(i) = (best^(num)-1)/(best-1)+best*(kk-1)+i;
+            full_cand_idx(i) = (bst^(num)-1)/(bst-1)+bst*(kk-1)+i;
         end
         %prev_index = (best^(num-1)-1)/(best-1)+kk;
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -220,8 +261,8 @@ while num < depth
         [B,I] = sort(eval_func,'Descend');  %Ascending.
         % Real value by Relative index
         % Absolute Index
-        BEST  = B(1:best);
-        Best_mp_idx = I(1:best); % These are relative indeces.
+        BEST  = B(1:bst);
+        Best_mp_idx = I(1:bst); % These are relative indeces.
         Best_idx = full_cand_idx(Best_mp_idx);
         
         Remove = setdiff(full_cand_idx,Best_idx);
@@ -238,7 +279,7 @@ while num < depth
         end 
         
     end
-    STOPS = mynodes.sts(:,end-(best^(num)-1):end);
+    STOPS = mynodes.sts(:,end-(bst^(num)-1):end);
     % Updates.
     previous_nodes = STOPS;
     % Replicate the previous nodes ,and those would be vacant space of the
@@ -258,7 +299,7 @@ for i = 1:length(mynodes.T)
         mynodes.S(1) = 0;
     else
         mynodes.T(i) = i;
-        mynodes.S(i) = fix((i-2)/best)+1;
+        mynodes.S(i) = fix((i-2)/bst)+1;
     end
 end
 disp("Plot")
@@ -334,9 +375,10 @@ fprintf('The number of trajectories is %d \n',size(stops,1))
 fprintf('The number of crashed nodes with obstacles is %d \n',size(col_idx,2))
 fprintf('The number of influenced nodes with thermal updrafts is %d \n',thm_number)
 
-%% Step 2. Feasibility steps
+%% Step 2. Full state gudiance step
+
 % The purpose of step 2 is check the feasibility of each trajectory from
-% the first step. 1) Visualize and derive a more realistic curve from using
+% the first step. 1) Visualize and derive a more realis` curve from using
 % stops. 2) I use the 
 disp("Step 2")
 % Firstly, Show the trajectories in step 1.
@@ -563,11 +605,11 @@ end
 for i = 1:l
     acs_comp_costs(i) = sum(acs_costs{i});
 end
-[value,best] = min(acs_comp_costs);
+[value,bst] = min(acs_comp_costs);
 %%
 figure;title("The solution",'fontsize',fntsz)
 hold on;grid on;
-i = best;X = as_all_array{best};
+i = bst;X = as_all_array{bst};
 plot3(smp_path{i}(1,:)',smp_path{i}(2,:)',-smp_path{i}(end,:)','b')
 plot3(stops_red{i}(1,:)',stops_red{i}(2,:)',-stops_red{i}(end,:)','ro','markersize',8,'markerfacecolor','r')
 plot3(goal(1),goal(2),-goal(end),'bd','markersize',8,'MarkerFaceColor','b');
